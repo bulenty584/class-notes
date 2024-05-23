@@ -46,7 +46,7 @@
   
 + Reads and writes are fast
 
-+ Gievn block can only be written once
++ Given block can only be written once
   + writing again requires erasing
   + much slower and erases large sectors of the drive
   
@@ -151,3 +151,220 @@
   + Support dynamic addition of new file systems
 
 + Plug-in interface for file system implementations
+
+
+# Lecture 15 Notes #
+
+## Creating a New File
+
+* Allocate a free file control block
+  * For unix
+    * search super-block free 1-node list
+	* take the first free 1-node
+  * For DOS
+    * Search the [parent directory for an unused directory entry
+* Initialize a new file Control block
+  * With file type, protection, ownership
+  
+## Extending a File
+
+* Application requests new data assigned to a file
+  * may be explicit allocation/extension request
+  * may be implicit(e.g. write to a currently non-existing block)
+  
+## Deleting a file
+
+* Release all space that is allocated to the file
+  * For unix, return each block to free block list
+  * DOS does not free space!
+    * uses garbage collection
+	* searches all deallocated blocks and add them to free list at some future time
+
+* Deallocate the file control lock
+  * For UNIX, zero inode and return it to free list
+  * For DOS, zero the first byte of the name in the parent directory
+    * indicating that the directory entry is no longer in use
+
+## Free Space Maintenance
+
+* File system manager manages the free space
+
+* Getting and releasing blocks should be fast
+  * They are extremely frequent
+  * We'd like to not do I/O as much as possible
+
+## Allocation/Transfer size
+
+* Per operation overheads are high
+
+* larger transfer units are more efficient
+  * Amortize fixed per-op costs over more bytes/op
+  * multi-megabyte transfers are very good
+
+* What unit do we use to allocate storage space
+  * small chunks reduce efficiency
+  * large fixed size chunks -> internal fragmentation
+  * variable sized chunks -> external fragmentation
+
+## Flash Drive Issues
+
+* Dominant technology
+
+* Special flash characteristics:
+  * faster than hard disks, slower than RAM
+  * Any location equally fast to access
+  * But write-once/read-many access
+    * until you erase
+  * Only erase large chunks of memory
+
+## Read Ahead
+
+* Request Blocks from the device before any process asked for them
+
+* reduces process wait time
+
+* When does it make sense?
+  * When client requests sequential access
+  * When client seems to be reading sequentially
+
+* What are the risks
+  * May waste device access time reading unwanted blocks
+  
+  * may waste buffer space on unneeded blocks
+  
+## Write Caching
+
+* Most device writes go to a write-back cache
+  * They will be flushed out to the device later
+
+* Aggregates small writes into large writes
+  * If application does less than full block writes
+  
+* Eliminates moot writes
+  * If application rewrites to the same data
+  * If application deletes the file
+
+* Accumulates large batches of writes
+  * A deeper queue to enable better disk scheduling
+  
+## Common Types of Disk Caching
+
+* General block caching
+  * Popular files that are read frequently
+  * Files that are written and then re-read
+  * Provides buffers for read-ahead and deferred write
+
+* Special purpose caches
+  * Directory caches speed up searches of same dirs
+  * Inode caches speed up re-uses of same file
+
+* Special purpose caches are more complex
+  * often work much better by matching cache granularities to actual needs
+
+## Pinning File Data in Caches
+
+* Caching usually controlled by LRU-ish strategy
+
+* Some file data is *pinned* in memory
+  * Not subject to cache replacement, temporarily
+
+* Inodes of files processes are one example
+  * Ensures quick access to a structure that will probably be used again
+
+* Contents of current working directories may be pinned
+
+## Naming in File Systems
+
+* Each file needs some kind of handle for us to refer to it!
+
+* OS likes simple numbers as names
+  * not usable by people of programs tho
+
+## File Names and Binding
+
+* File systems know files by descriptor structures
+
+* We must provide more useful names for users
+
+* The file system must handle name-to-file mapping
+  * Associating names with new files
+  * Finding the underlying rep. for a given name
+  * Changing names associated with existing files
+  * allowing users to organize files using names
+  
+* *Name Space* - the total collection of all names known by some naming mechanism
+  * All names that *could* be created by mechanism
+
+## Some Issues in Name Space Architecture
+
+* How many files can have the same name?
+  * one per file system ... flat name spaces
+  * one per directory ... hierarchical name spaces
+
+* How many different names can one file have?
+
+  * Single "true name"
+  * Only one "true name", aliases are allowed
+
+* Do different names have different characteristics?
+
+* Directories are like files (have their own inodes, NO SYMBOLIC LINKS THO)
+
+## Directories are Files
+
+* Stored in file system, have inodes, file descriptors
+
+* Directory contains multiple directory entries
+  * Each directory entry describes one file and its name
+
+* User applications are allowed to read directories
+  * get info on each file
+  * find out what files exist
+
+## File Names vs. File Paths
+
+* In some name space systems, files had "true names"
+  * only one possible name for a file
+  * kept in a record somewhere
+
+## Multiple File Names In Unix
+
+* How do links relate to files?
+  * They're the names only
+
+* All other metadata is stored in the file inode
+  * File owner sets file protection
+  
+* All links provide access to the same file
+
+## Links and De-allocation
+
+* Files exist under multiple names
+
+* What do we do if one name is removed?
+
+* Unix: File exists as long as at least one name exists!
+
+* We must keep and maintain a reference count of links (in file inode, not directory)
+
+## Symbolic Linls
+
+* Different way of giving files multiple names
+
+* implemented as a special type of file
+  * No guarantee the file is actually there!
+
+* NOT A REFERENCE TO THE INODE
+
+* File system automatically recognizes symbolic links (automatically opens associated file instead)
+
+## Core Reliability Problem
+
+* File system writes typically involve multiple operations
+  * not just writing data block to disk/flash
+  * also writing one or more metadata blocks
+  * inode, free list, maybe directory blocks
+
+* All must be committed to disk for write to succeed
+
+
