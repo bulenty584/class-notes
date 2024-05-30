@@ -367,4 +367,284 @@
 
 * All must be committed to disk for write to succeed
 
+# Lecture 15
 
+## Introduction
+
+* OS provides the lowest layer of software visible to users
+* OS is also close to the hardware!
+  * has complete access to hardware
+* if OS isn't protected, the machine isn't protected
+* flaws in the OS compromise all security at higher levels (rotten core)
+
+## Why is the OS security so Important??
+
+* OS controls access to application memory
+* OS schedules processes!
+* OS ensures that users receive the resources they ask for
+* if OS isn't doing these things securely, a lot can go wrong
+
+## Important Definitions
+
+* *Security* is a policy
+  * describes what you want to have happen (what should happen vs. what shouldn't)
+* *Protection* is a mechanism
+  * E.g. permissions for different users
+*Protection mechanisms implement security policies
+
+## Vulnerabilities and Exploits
+
+* *vulnerability* is a weakness that can cause an attacker to cause problems
+* *exploit* is an actual incident of taking advantage of a vulnerability
+  * allowing attacker to do something bad on some particular machine
+  * term also refers to code or methodology that is used to take advantage of a vulnerability
+  
+## Trust
+
+* Extremely important
+* Do certain stuff for people you trust
+* Don't do certain stuff for people you don't trust
+* Seems simple, but how do you express it, why do you trust, how can you be sure...?
+
+## Trust and the Operating System
+
+* You **have** to trust your OS
+  * Controls hardware, including memory
+  * Controls how your processes are handled
+  * Controls all I/O devices
+* If your OS is corrupt, you're cooked
+
+## Authentication and Authorization
+
+* We need to know who wants to do something
+  * Allow trusted parties to do it
+  * Don't allow others to do it
+* We need to know who's asking
+  * *authentication!!*
+* We then need to check if that party should be allowed to do it
+  * Determining that is authorization
+  * authorization usually requires authentication
+  
+## Authentication
+
+* Security policies tend to allow some parties to do something, but not others
+* We need to know who's doing the asking
+* For OS, the computer decides this!
+
+## Real World Authentication
+
+* Identification by recognition
+* Identification by credentials
+* Identification by knowledge
+* Identification by location
+* All of the above have similar cyber analogs
+
+## Authentication With a Computer
+
+* Can't do certain things well
+  * e.g. facial recognition
+* Bottom line is they are not as smart as people!
+* They can do computations super fast, though
+  * Mathematical methods are acceptable
+* Often must authenticate non-human entities
+  * Like processes or machines
+  
+  
+## Identities in OS
+
+* We usually rely on User ID
+  * Uniquely identifies some user on a particular computer
+  * Processes run on his behalf, so they inherit his ID
+* Implies a model where any process belonging to a user has all his privileges
+  * drawbacks are there
+
+## Boostrapping OS Authentication
+
+* Processes inherit their User IDs from their parent process
+* Somewhere along the line we have to create a process belonging to a new user
+  * Typically on login to a system
+* We can't just inherit that identity, so how can we tell who this newly arrived user is?
+
+## Passwords
+
+* Authenticate the user by what he *knows*
+  * Secret word he supplies to the system on login
+* System must be able to chekc that the password was correct
+  * either by storing it, or a hash of it
+* If correct, tie user ID to a new command shell or window management process
+
+## Problems With Passwords
+
+* They have to be unguessable
+* If networks connect remote devices to computers , susceptibleto password sniffers
+  * Programs which read data from the network, extracting passwords when they see them
+* Unless quite long, brute force attacks often work on them
+* Widely regarded as an outdated technology
+* But widely used
+
+## Proper Use of Passwords
+
+* Passwords should be sufficiently long
+* Passwords should be unguessable
+* Passwords should never be written down
+* Passwords should never be shared
+* Hard to achieve all this simultaneously
+
+## Challenge/Response Systems
+
+* Authentication by what questions you can answer correctly
+  * Again, by what you know!
+* The system asks the user to provide some information
+* If it's provided correctly, the user is authenticated
+* Safest if it's a different question every time
+  * Not practical for humans
+
+## Hardware-Based Challenge/Response
+
+* The challenge is sent to a hardwaer device belonging to the appropriate user
+  * Authentication based on what you have
+* Sometimes possession of device is enough 
+  * text challenges sent to a smart phone to be typed into web request
+* Sometimes device performs a secret function on the challenge
+  * smart cards
+  
+## Problems With Challenge/Response
+  * If based on what you know, usually too few unique and secret challenge/response pairs
+    * Often the response can be found by attackers
+  * If based on what you have, fails if you don't have it
+    * Whoever does have it might pose as you
+  * Some forms susceptible to network sniffing
+  
+## Biometric Authentication
+
+* Authentication based on what you are
+* Measure some physical attribute of the user
+  * Fingerprints, voice patterns, retinal patterns, etc.
+* Convert it into a binary representation
+* Check the representation against a stored value for that attribute
+* if it's a close match, authenticate the user
+
+## Problems With Biometric Authentication
+
+* Requires very special hardware
+* Many physical characteristics vary too much for practical use
+* Generally not helpful for authenticating programs or roles
+* Requires special care when done across network!
+
+
+## Errors in Biometric Authentication
+
+* False Positives
+  * You identified Bill Smith as Peter Reiher
+*False negatives
+  * Didn't identify Peter Reiher as Peter Reiher
+  
+## Multi-factor Authentication
+
+* Rely on two separate authentication methods
+  * E.g. password and text message to your cell phone
+* If well done, each method compensates for some of the other's drawbacks
+  * If poorly done, not so much
+* The current preferred approach in authentication
+
+## Access Control in OS
+
+* OS can control which processes access which resources
+* Giving it the chance to enforce security policies
+* Mechanisms used to enforce policies
+
+## Access Control Lists
+
+* ACLs
+
+## An Example Use of ACLs: The Unix File System
+
+* Still in wide use today
+* Per-file ACLs (files are the objects)
+* Three subjects on list for each file
+  * Owner, group, other
+* Three modes
+  * Read, write, execute
+  * Sometimes have special meanings
+  
+## Pros and Cons of ACLs
+
+* Easy to figure out who can access a resource
+* Easy to revoke or change access permissions
+* Hard to figure out what a subject can access
+* Changing access rights requires getting to the object
+
+## Capabilities
+
+* Each entity keeps a set of data items that specify his allowable accesses
+* Essentially, a set of tickets
+* To access an object, present the proper capability
+* Possession of the capability for an object implies that access is allowed
+
+## Properties of Capabilities
+
+* Capabilities are essentially a data structure
+  * just collection of bits
+* Having the capability grants access
+  * can't be forgeable
+* How to ensure unforgeability for collection of bits?
+  * don't let user/process have them
+  * store them in the OS
+  
+## Pros and Cons of Capabilities 
+
+* Easy to determine what objects a subject can access
+* Potentially faster than ACLs 
+* Easy model for transfer of privileges
+* Hard to determine who can access an object
+* Requires an extra mechanism to allow revocation
+* In network environment, need cryptographic methods to prevent forgery
+  * Someone can listen to what's being transferred, and can make copy of capability bits
+  
+## OS Use of Access Control
+
+* OS use both ACLs and capabilities
+  * sometimes for same resource
+* E.g. Unix/Linux uses ACLs for file opens
+* That creates a file descriptor with a particular set of access rights
+  * E.g., read-only
+* The descriptor is essentially a capability
+
+## Enforcing Accesses in an OS
+
+* Protected resources must be inaccessible
+  * Hardware protection must be used to ensure this
+  * only the OS can make them accessible to a process
+* To get access, issue a request (system call) to OS
+  * OS consults access control policy data
+* Access may be granted directly
+  * Resource manager maps resource into process
+* Access may be granted indirectly
+  * Resource manager returns a *capability* to process
+  
+## Cryptography
+
+* Convert secret from a readable form to a different one that's not readily readable
+
+## Cryptography Terminology
+
+* Sender is S
+* Receiver is R
+* *Encryption* is the process of making the message unreadable by anyone but R
+* *Decryption* is the process of making the encrypted message readable by R
+* A system performing these transformations is a cryptosystem
+  * Rules for transformation sometimes called a *cipher*
+
+## Plaintext and Ciphertext
+
+* *Plaintext* is the original form of the message (often referred to as P)
+* *Ciphertext* is the encrypted form
+
+## Cryptographic Keys
+
+* Most cryptographic algorithms use a *key* to perform encryption and decryption
+  * Referred to as K
+* The key is a secret
+* Without the key, decryption is hard
+* Reduces secrecy problem from your (long) message to the (short) key
+  * Still a secret
