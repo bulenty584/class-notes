@@ -28,6 +28,7 @@
 
 * Max-Flow problem is thus to find a flow of maximum possible value
 
-* Suppose we cut the nodes of a graph into two sets A and B so that s \epsilon A and t \epsiilon B.
+* Suppose we cut the nodes of a graph into two sets A and B so that s $\epsilon$ A and t $\epsiilon$ B.
   * Any flow that goes from s to t must cross from A into B at some point and use some edge capacity from A to B
     * Each cut of the graph puts a bound on the maximum possible flow value
+
