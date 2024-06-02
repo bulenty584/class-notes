@@ -5,7 +5,7 @@
   s.t. every edge e $\epsilon$ E has one end in X and the other end in Y. 
   
   * Matching in this problem is a collection of pairs over the set s.t. no element of the set appears in more than one pair. 
-    * The edges constitute pairs of nodes, and we say that a *matching* in a graph G = (V, E) is a set of edges M \subset E with the property that each node appears in at most one edge of M. A set of edges is a perfect matching if every node appears in exactly one edge of M.
+    * The edges constitute pairs of nodes, and we say that a *matching* in a graph G = (V, E) is a set of edges M $\subset$ E with the property that each node appears in at most one edge of M. A set of edges is a perfect matching if every node appears in exactly one edge of M.
 
 ## Formulating the Problem
 
@@ -57,3 +57,43 @@
       * Achieve this by pushing flow backward!
       * Include the edge e<sup>'</sup> = (v,u) in G<sub>f</sub> with a capacity of f(e)
       * e<sup>'</sup> has the same ends as e, but its direction is the opposite and so its a *backward edge*
+
+* Precise way we push flow from s to t in a residual graph
+  * Let P be a simple s-t path in G<sub>f</sub>
+  * define *bottleneck(P,f)* to be the **minimum** residual capacity of any edge on P wrto flow f
+  
+  ```
+  augment(f,P):
+      Let b = bottleneck(P,f)
+      for each edge (u,v) in P:
+        If e = (u,v) is a forward edge then
+            increase f(e) in G by b
+        Else ((u,v) is a backward edge, and let e = (v,u))
+            decrease f(e) in G by b
+        Endif
+      Endfor
+      Return(f)
+      
+  ```
+  
+  * Line-by-line
+    * First we find the minimum residual capacity on any path from s to t with a flow
+    * we then loop over every edge in the path
+    * If the edge is a forward edge which we defined above!
+      * increase the capacity in the graph by the bottleneck
+    * If the edge is a backward edge, then decrease the capacity of the backward edge by bottleneck 
+    
+* Now we can define the max-flow algo
+
+```
+Initially f(e) = 0 for all e in G
+While there is an s-t path in the residual graph:
+    Let P be a simple s-t path in the residual graph
+    f_prime = augment(f,P)
+    update f to be f_prime
+    update the residual graph to be the residual graph with f_prime
+Endwhile
+Return(f)
+```
+
+    
