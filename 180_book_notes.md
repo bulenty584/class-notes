@@ -55,5 +55,5 @@
       * The edges included this way called *forward edges*
     * For each edge e = (u,v) of G on which f(e) > 0, there are f(e) units of flow that we can undo if we want to
       * Achieve this by pushing flow backward!
-      * Include the edge $e^\prime^ = (v,u)$ in G~f~ with a capacity of f(e)
+      * Include the edge $e^{\prime}^ = (v,u)$ in G~f~ with a capacity of f(e)
       * e^\prime^ has the same ends as e, but its direction is the opposite and so its a *backward edge*
