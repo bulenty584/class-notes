@@ -49,11 +49,11 @@
       * Push forward on edges with leftover capacity and push backward on edges that already carry flow
       
 * Residual Graph 
-  * Given flow network G and flow f on G, we define the residual Graph G~f~ of G with respect to f as follow: 
-    * The node set of G~f~ is the same as G's
-    * For each edge e = (u,v) of G on which f(e) < c~e~, there are c~e~ - f(e) "leftover" units of capacity on which we could try pushing flow forward. So we include the edge e = (u,v) in G~f~, with a new capacity of c~e~ - f(e).
+  * Given flow network G and flow f on G, we define the residual Graph G<sub>f</sub> of G with respect to f as follow: 
+    * The node set of G<sub>f</sub> is the same as G's
+    * For each edge e = (u,v) of G on which f(e) < c<sub>e</sub>, there are c<sub>e</sub> - f(e) "leftover" units of capacity on which we could try pushing flow forward. So we include the edge e = (u,v) in G<sub>f</sub>, with a new capacity of c<sub>e</sub> - f(e).
       * The edges included this way called *forward edges*
     * For each edge e = (u,v) of G on which f(e) > 0, there are f(e) units of flow that we can undo if we want to
       * Achieve this by pushing flow backward!
-      * Include the edge $e^{\prime}^ = (v,u)$ in G~f~ with a capacity of f(e)
-      * e^\prime^ has the same ends as e, but its direction is the opposite and so its a *backward edge*
+      * Include the edge e<sup>'</sup> = (v,u) in G<sub>f</sub> with a capacity of f(e)
+      * e<sup>'</sup> has the same ends as e, but its direction is the opposite and so its a *backward edge*
