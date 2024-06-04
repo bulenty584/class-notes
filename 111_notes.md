@@ -648,3 +648,226 @@
 * Without the key, decryption is hard
 * Reduces secrecy problem from your (long) message to the (short) key
   * Still a secret
+
+# Lecture 17 Continued
+
+## Asymmetric Cryptosystems
+
+* *public key cryptography*
+* Encryption and decryption use different keys
+  * Encrypt with one and decrypt with the other
+
+## Using Public Key Crytography
+
+* Keys are created in pairs
+* One key is kept secret by the owner and the other is made public to the world
+* If you want to send an encrypted message to someone, encrypt with his public key
+  * Only this person has private key to be able to decrypt encrypted message
+  
+## Authentication with Public Keys
+
+* If I want to "sign" a message, encrypt it with my private key
+* Only I know my private key, so no one else could create that same message
+* Everyone knows my public key, so everyone can check my claim directly
+* This is much better than with symmetric cryptography
+  * receiver could not have created the message!
+  * Only sender could have created it
+  
+## Issues with PK Key Distribution
+
+* Security of public key cryptography depends on using the right public key
+* If I'm fooled into using wrong one, that key's owner reads my message
+  * or authenticate incorrectly
+* Need high assurance that a given key belongs to a specific person
+  * either key distribution infrastructure
+  * certificates
+* Both are problematic
+
+## Nature of PK Algos
+
+* Usually based on some problem in math
+  * like factoring really large numbers
+* Security less dependent on brute force
+* More on the complexity of the underlying problem
+* Implies choosing key pairs is complex and expensive
+* We need big keys!
+  * We regard 4096 bit key as being good enough!
+
+## Example Public Key Ciphers
+
+* RSA
+  * Most popular public key algo
+  * Used on everyone's computer nowadays
+* Elliptic Curve Cryptography
+  * An alternative to RSA
+  * Usually has better performance
+  * Not as widely used or studied
+  * Still generally available
+
+## Security of PK Systems
+
+* Based on solving the underlying problem
+  * E.g. for RSA, factoring large numbers!
+* The longer the key, the more expensive the encryption and decryption
+
+## Combined Use of Symmetric and Asymmetric Cryptography
+  * Common to use both in single session
+  * Asymmetric Cryptography essentially used to securely share a key btwn sender and receiver
+  
+
+# Lecture 18: Distributed Systems
+
+## Intro
+
+* Modern computing is an application of distributed systems
+  * We need help from more than one computer in most cases
+* OS is going to help in local applications
+  * controls filesystem, etc.
+
+## Why Distributed Systems
+
+* Scalability
+  * We can make use of more than just one computer!
+    * Throwing computing power at a single problem
+  * Better performance!
+* Better Reliability and availability
+  * Can access any resource at any time
+  * 24/7 service despite disk/computer/software failure
+* Ease of use, with reduced operating expenses
+  * Centralized management of all services and systems
+  * Buy better services rather than computer equipment
+  
+## Few Problems
+
+* Different machines don't share memory
+  * Or any peripheral devices
+  * So one machine can't easily know the state of another!
+    * synchronization problems!
+* Only way to interact remotely is to use a network
+  * Usually asynchronous, slow, and error prone
+  * Usually not controlled by any single machine
+* Failures of one machine aren't visible to other machines
+  * pieces of a machine could fail at any moment!
+  
+## Deutsch's "Seven Fallacies of Network Computing"
+
+1. Network is reliable
+2. There is no latency
+3. Available bandwidth is infinite
+4. Network is secure
+5. Topology of the network does not change
+6. One administrator for the whole network
+7. Cost of transporting additional data is zero 
+
+**Bottom Line: true transparency is not achievable!**
+
+## Distributed System Paradigms
+
+* Parallel Processing
+  * Relying on tightly coupled special hardware
+* Single System Images
+  * Make all nodes look like one big computer
+  * Somewhere btwn hard and impossible
+* Loosely Coupled systems
+  * Work with difficulties as best you can!
+  * Typical modern approach to distributed systems
+* Cloud Computing
+  * recent variant
+
+## Loosely Coupled Systems
+
+* Characterization
+  * Parallel group of independent computers
+  * Connected by high speed LAN
+  * Serving similar but independent requests
+  * Minimal coordination and cooperation required
+* Motivation
+  * Scalability and price performance
+  * Availability: if protocol permits stateless servers
+  * Ease of management, reconfigurable capacity
+* Examples
+  * Web servers, app servers
+
+## Horizontal Scalability
+
+* Each node is largely independent
+* You can add capacity just by adding a node "on the side"
+* Scalability can be limited by hardware, etc.
+
+## Elements of Loosely Coupled Architecture
+
+* Farm of independent servers
+  - servers run same software, serve different requests
+  - may share a common back-end database
+* Front-end switch
+  - Distributes incoming requests among available servers
+  - Can do both load balancing and fail-over
+* Service protocol
+  - Stateless server and independent operations
+  - Successive requests may be sent to different servers
+
+## Horizontally Scaled Performance
+
+* Individual servers are very inexpensive
+  - Blade servers may be only 100-200$ each
+* Scalability is great
+  - 100 servers deliver ~100x performance
+* Service availability is great
+  - front-end automatically bypasses failed servers
+  - stateless servers adn client retries fail-over easily
+* True challenge is managing thousands of servers
+  - Automated installation, global config. services
+  - Self-monitoring, self-healing systems
+  - Scaling limited by management, not Hardware or algos
+
+## Cloud Computing
+
+* Most recent twist on distributed computing
+* What runs in a cloud?
+  - anything
+  - General distributed computing is hard
+* So much of the work is run using special tools
+* Tools support particular kinds of parallel/distributed processing
+  - Using a method like map-reduce or horizontal scaling
+* User need not be a distributed systems expert
+
+## MapReduce
+
+* The most common cloud computing software tool
+* Method of dividing large problems into little pieces
+* Each of which can be performed on a separate node
+* With an eventual combined set of results
+
+## The Idea behind MapReduce
+
+* Single function you want to perform on a lot of data
+  - Searchig for a particular string
+* Divide data into disjoint pieces
+* Perform the function on each piece on a separate node (map phase)
+* Combine results to obtain output (reduce)
+
+## An Example
+
+* We have 64 mb of text data, divide into 4 pieces of 16 mb
+* Send each piece to a different processor to run a function on each piece
+* At the end the pieces are sent to reduced nodes to combine again
+
+## Synchronization in MapReduce
+
+* Each map node produces an output file for each resource node
+* Produced automatically
+* Reduced node can't work on this data until the whole file is written
+* Forcing a synchronization point btwn the map and reduce phases
+
+## What's hard about Distributed Synchronization?
+
+* Spatial separation
+  - Different processes run on different systems
+  - No shared memory for locks
+  - They are controlled by different OSes
+* Temporal Separation
+  - Can't "totally order" spatially separated events
+  - Before/simultaneous/after lose their meaning
+* Independent modes of failure
+  - One partner can die while others continue
+  
