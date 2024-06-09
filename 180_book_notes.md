@@ -96,4 +96,9 @@ Endwhile
 Return(f)
 ```
 
+# 6.4 KnapSack Problem
+
+
+
+
     
