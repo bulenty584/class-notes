@@ -86,3 +86,66 @@
 	    * VMM can detect idle loop by noticing OS switched to low-power mode
 	  * OS can be changed
 
+# CHAPTER 39: FILES AND DIRECTORIES
+
+## Introduction
+
+* Two key OS abstractions are:
+  * the process ==> virtualization of the CPU
+  * the address space ==> Allows a program to run as if it's in its own private, isolated world
+* Another SUPER IMPORTANT PIECE: **persistent storage**. 
+  * **Hard disk drive** or modern **solid-state storage device**
+    * Stores info permanently
+    
+* FOLLOWING IS ALL TO DO WITH A <i><b> UNIX FILESYSTEM </b></i> 
+
+## 39.1: Files and Directories
+
+* **File** abstraction
+  * linear array of bytes, each of which you can read and write
+  * Each file has some kind of low-level name
+    * **INODE NUMBER**
+  * OS doesn't really know much about the structure of the file
+    * Job is to just store it!
+* **Directory** abstraction
+  * Like a file, it has a low-level name but its contents are specific
+    * contains list of user-readable and low-level name pairs
+    
+## 39.3 Creating Files
+
+* **open()** system call used to create a file with O_CREAT flag
+  * O_TRUNC flag truncates the existing file to a size of zero bytes as to remove any existing content if it exists
+  * returns a **File descriptor**
+    * Just an integer and is used in UNIX to access files (you use file descriptor to read or write to a file once it's opened)
+    * File descriptor is a **capability**
+      * handle that gives you power to perform certain ops
+      * pointer to an object of type file
+        * once you have such an object, you can call other methods to access the file
+    
+    * File descriptors are managed by the OS on a per-process basis
+      * Some kind of simple structure (e.g. an array) is kept in the proc structure on unix
+      * Each entry of the array is just a pointer to a <i>struct file</i>. 
+
+## 39.4: Reading and Writing Files
+  * **strace** is used to track the system calls made by a program
+    * traces every system call made by a program while it runs
+    * = num, this num is the file descriptor!
+      * Why does first call to open return 3?
+        * Each running process already has three files open!
+          * STDIN, STDOUT, STDERR (0,1,2)
+      * read() system call reads bytes from a file
+        * First arg is file descriptor
+        * Second arg points to a buffer where the result of the read() will be placed
+        * Third arg is the size of the buffer
+        * return arg is the number of bytes it read
+      * write() system call writes bytes to a file
+        * first file is opened for writing, then write() system call is called, then close()
+  * **Open file table**
+    * Each process maintains an array of file descriptors
+      * each of which refers to an entry in the system-wide **open file table**. 
+      * Each entry in this table tracks which underlying file the descriptor refers to, the current offset and other details like if the file is readable or writable
+
+## 39.5: Reading and Writing
+
+* lseek system call is used to read ot write to a specific offset in a file
+

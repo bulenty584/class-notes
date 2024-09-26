@@ -137,7 +137,7 @@
   + Copy data btwn user space and file buffer
   + Request file system to write back block when we're done
 
-+ Seek
++ lSeek
   + Change logical offset associated with open instance
   
 + Map file to address space
@@ -871,3 +871,36 @@
 * Independent modes of failure
   - One partner can die while others continue
   
+## FILESYSTEM NOTES
+
+* DDI
+  * Standard (top-end) device driver entry-points
+  * We need top-end from the OS to the driver
+  * Basis for device-independent applications
+  * This enables the system to exploit new devices too
+  
+  * Some entry points correspond directly to system calls
+  
+* Common DDI(SOFTWARE)
+  * Life-cycle
+    * initialize, open, cleanup, release (things that specify the lifecycle of the drivers)
+  * Basic I/O
+    * read/write, seek, etc. (things that specify which system calls the device driver interface can support to interact with devices)
+  * Serial Devices
+    * Keyboard, mouse (receive character input from user)
+  * Disk (request, revalidate, fsync (makes sure files on disk and files being modified are same (if we write, we want to make sure it's written!))
+  * Networks
+    * send and receive (receive, transmit, etc.)
+
+## Drivers - Simplifying Abstractions
+  * We want to encapsulate knowledge of how to use a device
+    * hide behavior from user if its not relevant to them
+    * Map standard operations to device-specifc ops!
+
+## Kernel Services for Device Drivers
+
+* We need memory!
+  * implement a data structure, etc.
+  * Be able to ask OS!
+  * When you're doing stuff in parallel, certain devices need to be careful
+    * Asks OS to make sure locking operations are supported!
