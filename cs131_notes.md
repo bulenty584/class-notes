@@ -37,3 +37,36 @@
 - Load source file into RAM --> Initialize Data structures needed by interpreter --> We check if program finished running?
 - If yes, we exit 
 - If no, we fetch next statement to run, and repeat process
+
+
+# Lecture 2, October 2, 2024
+
+Interpreter takes source code, does some intermediate processing and runs instruction there and then and keeps moving on
+
+## Python Lecture
+
+### Allocation of Objects
+
+In Python, all objects are references: When we assign objects and variables, python will create a new variable on the heap and the garbage collector cleans it up
+
+### Class Variables
+
+Class variables are static, any variable defined in a class, not as self, will be global and shared across all instances
+
+### Copying Objects
+
+Python has deep copying (makes a copy of the top-level object and every object referred to directly or indirectly by the top-level object)
+
+Python also has shallow copying (makes a copy of only the top-level object)
+
+### Object References
+
+Assignments of object references do not make deep copies
+
+### How are Lists implemented in Python??
+
+As an array! O(n) to search a list, O(1) for retrieval, O(m+n) for appending one list to another (each index has a pointer to the element)
+
+
+# Lecture 3, October 7, 2024
+

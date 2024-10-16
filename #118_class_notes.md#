@@ -193,3 +193,8 @@ CSMA: Listen before you transmit
 CD: While you are transmitting you look for a collision
   - detect collision while you are transmitting
   - stop and start again
+
+
+## 802.11
+
+
