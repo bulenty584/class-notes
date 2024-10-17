@@ -237,3 +237,54 @@ Two overheads:
 - overhead of preamble and postamble is gradually decreased over a huge amount of bits
 - phase info learnt from preamble is used to clock remaining bits in frame as well
 - inter-frame time needed for reliable phase detection is paid ONCE over a huge group of bits
+
+One problem is if we make the frame size larger, we cannot use the brute force approach of relying on the bounded inaccuracy btwn the sender and the receiver to *stay in phase*
+
+**Types of Synchronous Coding**:
+
+Like asynch. coding, we can represent a 1 with one voltage and 0 with another (NRZ (non-return to zero) coding)
+
+We can always also prefix a frame of data by an alternating string of 1s and 0s to get into phse, but the main problem is if we have a long string of 1s or 0s will have no transitions
+
+More Popular scheme is Manchester Encoding:
+
+0 is encoded as -1.5V for half a bit follows by 1.5V for the remaining half bit
+
+1 is encoded as 1.5V for half a bit then -1.5V (FLIPPED)
+
+We are essentially sending two coded bits for every real bit transmitted (transmission efficiency is poor)
+
+**HUGE ADVANTAGE** is that Manchester is *self-clocking* --> Every bit regardless of its value provides a transition that can be used to sample the bit value
+
+If we knew where approx. where the half bit period was, our decoding algo could be: *wait for a transition at roughly the mid bit. Then start a timer for a quarter bit after that. If the value is above some threshold, its a 0, otherwise its a 1*
+
+
+We can compare different types of codes based on:
+
+*Ability to guarantee transitions*: Most important
+*Transmission Efficiency*: Ratio of real to transmitted bits
+*Signal to noise ratio*: Given same max. and min. transmission levels, the amount of noise required to render a received signal ambiguous
+*Implementation Complexity*: Qualitative
+
+### 4.3 Broadband Coding
+
+*baseband* coding: coding using energy levels (voltage or light)
+
+*broadband* coding: information is *modulated* on a carrier wave of a certain frequency
+
+In *frequency shift keying (FSK)*, we let a high frequency encode a 0 and a low one encode a 1
+
+In *amplitude shift keying*, we change the amplitude of the sine wave to encode either a 1 or a 0
+
+## 5.0: Media Dependent Sublayer: Types of Media
+
+### 5.1: Media Affects Protocols
+
+Examples of how media affects protocol design:
+
+**Bandwidth and Message Formats**: Earliest networks used existing phone lines and were limited to low bandwidth voice links so they would send fewer messages
+
+With fiber, this is less of an issue
+
+**Broadcast LANs and Broadcast**: Use of coaxial cable in Ethernet made broadcasting free essentially.
+
