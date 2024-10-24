@@ -68,5 +68,5 @@ Assignments of object references do not make deep copies
 As an array! O(n) to search a list, O(1) for retrieval, O(m+n) for appending one list to another (each index has a pointer to the element)
 
 
-# Lecture 3, October 7, 2024
+f :: ([Int] -> [String] -> a) -> a
 

@@ -186,10 +186,89 @@ TDM vs SM:
 
 White frames conflict with black frames
 
-Every island had a clock and every island had to start transmitting at a multiple of T (differnet multiple)
+Every island had a clock and every island had to start transmitting at a multip[<35;8;21Mle of T (differnet multiple)
 
 CSMA: Listen before you transmit
 
 CD: While you are transmitting you look for a collision
   - detect collision while you are transmitting
   - stop and start again
+
+# Lecture Notes Oct. 17, 2024
+
+MAC Address -> anytime you have an ethernet connection, you have a MAC address (two for each router, one at each endpoint)
+
+Multicast address -> an address that you can send to mult. people
+
+## LAN
+
+Local area network (LAN) is like a shared wire with multiple senders and multiple receivers
+
+**Bridges**: All we need are a destination and source address
+
+
+# Lecture Notes 10/22/24
+
+Bridging Review ==> Addresses A, B, C in datalink header are MAC addresses
+
+Basic Ideas are so simple
+
+All routers are just MAC addresses to Bridges (each Bridge sees ethernet). 
+
+From router pov: bridges are invisible
+
+Why have routers? Data link headers were dev. before bridges! People built headers in order to support routers
+
+
+Why are bridges bad: 
+
+- 802 addresses are flat. Routing addresses hierarchical. Bridges have to learn all addresses in an extended LAN
+
+MAC addresses are flat and unique, IP addresses are hierarchical
+
+
+Routers connect extended LANs to form a routing network
+
+Bridges can be used to construct a small number of compatible LANs to form an extended LAN.
+
+Most routers today are multiport
+
+
+**IP ADDRESSING AND FORWARDING**
+
+When you send to a domain name like cs.Berkeley.edu, a resolver is your host translates the name to a 32bit IP address. ALl messages carry IP destinations addresses. 
+
+They used to have ONLY Class A addresses, then moved to class B, class C
+
+
+OLD IP FORWARDING
+
+Algo:
+
+- Find destination: Extract Nextwork number of dest. by parsing and checking for class A, class B
+
+-Final Hop reached? If (network number of dest = network number of one of the routers local interfaces) deliver packet. Map to local address using ARP or some such network specific protocol
+
+- Lookup Router Table: Lookup Network Number in the corresponding routing table, if it exists, deliver packet
+
+NEW IP FORWARDING
+
+Prefix table has entries that define prefix number
+
+In real time as packets are incoming, we have to determine where each prefix goes. 
+
+What the last hop has to do?
+
+Four problems the Endnodes MUST solve
+
+P1: Routers need Data Link addresses of endnodes
+P2: Endnodes need DL address of 1 router
+P3: E1 and E2 should be able to communicate without a router
+P4: E1 to E3 traffic should go through R2
+
+
+IP Addresses to End-Node problems:
+
+P1: ARP for MAC address of destination
+P2: a service called DHCP that gives you the IP address of one router
+P3: Need to understand how to implement ACLs using simple linear search
