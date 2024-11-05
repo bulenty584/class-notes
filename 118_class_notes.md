@@ -272,3 +272,57 @@ IP Addresses to End-Node problems:
 P1: ARP for MAC address of destination
 P2: a service called DHCP that gives you the IP address of one router
 P3: Need to understand how to implement ACLs using simple linear search
+
+
+# Lecture Notes 10/29/2024: Route Comparison
+
+MAC address comes built into laptop, which is used to talk to DHCP server to get routing number, and assigns you an IP address.
+
+DNS server: provides the source IP address
+  - browser has a resolver that has a local DNS agent (locally) (name -> address)
+
+ARP protocol: changes route address to MAC address on every hop!
+
+Router also ARPs
+
+**Question Route Comparison Answers: Who builds the forwarding table in the router??**
+
+## Part 1: Routing Within Organizations
+
+Four Parts in Routing: 
+  - **Set up addresses and topology**: assign IP addresses, connect routers
+  - **Neighbor determination**: Endnodes talk to routers (ARP), Roter to router neighbors
+  - **Compute Routes**: most complex 
+  - **Forward packets**: Ships off forwarding table (packets)
+  
+Two ways of constructing Routes:
+
+**Link State**: Global view of Link state to everyone!
+**Distance Vector**: We know if someone keeps neighbors and who they are, we can determine how far away a specific node is
+- Routers gossip with neighbors but does badly with node failures
+
+### Distance Vectors
+
+Everybody locally is getting gossip from their neighbors (periodically sending gossip vectors)
+
+As in spanning tree we have port and central databases
+
+Central is computed based on best port database
+
+You store all of your neighbors even if they aren't the most cost-effective! (Good for when a link fails)
+
+In distance vector, everybody sends predictions to every router
+
+
+In Link State: every router sends its cost to all neighbors
+
+
+# Lecture 118 Computing Routes
+
+What if we want to move to different place (CMU -> UCLA)?
+
+**Answer:** Autonomous Systems (AS)
+
+**BGP: routing btwn ASs**:
+
+- Does not hold a distance, holds a list of ASs
