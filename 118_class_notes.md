@@ -326,3 +326,28 @@ What if we want to move to different place (CMU -> UCLA)?
 **BGP: routing btwn ASs**:
 
 - Does not hold a distance, holds a list of ASs
+
+# Lecture Notes Tuesday November 5, 2024
+
+What does BGP do?
+
+Choose btwn routes based on attributes and local network policy
+
+## BGP is suboptimal
+
+- we rely on local knowledge only:
+  - neighbors best routes may not be your best
+  
+## Three Topics in Naming
+
+- How to get an IP address to get started (DHCP)
+- How to map from user-friendly names like ccle.ucla.edu to an IP address to send (DNS)
+- How to build a large private network with only 1 assigned to public IP address: magic. No (NAT)
+
+## Mapping btwn Identifiers
+
+DNS: Given hostname, provide IP address; given IP address, provide hostname
+ARP: Given IP address, provide MAC address; To enable communication within LAN
+DHCP: Automates host boot-up process; Given MAC address, assign unique IP address; also tells host other stuff about the Local Area Network
+
+
