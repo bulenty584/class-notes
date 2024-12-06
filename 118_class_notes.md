@@ -351,3 +351,121 @@ ARP: Given IP address, provide MAC address; To enable communication within LAN
 DHCP: Automates host boot-up process; Given MAC address, assign unique IP address; also tells host other stuff about the Local Area Network
 
 
+# TCP Congestion Control
+
+Why is doing Congestion control at IP not going to work?
+
+Because the IP layer has no idea if packets are dropped. But TCP does!!
+
+Where should we do it? The sending TCP
+
+The larger the window, the more packets I'm letting in
+
+How do we pick the window size? You could start low and keep increasing
+
+As congestion increases, shrink window size
+
+We get livelock at the TCP layer
+
+The whole point is to shift the "mean" to the left, and we cannot do better than the carrying capacity of the link. Want to stay away from 0
+
+The routers detect the congestion, and any packets going through it sets the bit. The sender gets that and we have early congestion detection
+
+## Flow vs. Congestion Control
+
+**Flow Control**: matching speed of sender to receiver speed
+**Congestion Control**: Matching speed of sender to network speed
+
+## Fair Bandwidth Allocation
+
+You begin with the maximum bottleneck, freeze that and adjust the remaining!
+
+TCP is going to try and approximate this ideal notion of fairness
+
+## Congestion Collapse
+
+Definition: "When an increase in network load produces a decrease in useful work"
+
+Why does this happen?
+
+Bottleneck
+
+## Mitigation Options
+
+Increase network resources
+
+- more buffers for queuing
+- increase in link speed
+- pros/cons?
+
+Reduce network load(TCP strat)
+
+- send data slower
+- how much slower?
+- when to slow down??
+
+## Designing a Control Scheme
+
+- Open loop
+  - explicitly reserve bandwidth in the network in advance
+- Closed loop(TCP)
+  - Rely on feedback based on ACKs and adjust bandwidth
+- do it based on host system (TCP)
+  - Host systems keep trakc of their sending rates
+  
+## Feedback Congestion Control
+
+Three signals of congestion control: timer goes out, 3 duplicate ACKs, ECN bit (Congestion bit)
+
+Source has to adjust window:
+
+- We start with 1, and we increase based on ACKs received
+
+How does a source reach steady state??
+
+The rate rate should converge to 19.2, so it starts 1, 2, 4, 8, ... and it'll drop at some point
+
+**Avoidance vs. Control**
+
+The ECN bit is try to AVOID congestion in the first place vs. CONTROL it when it happens
+
+**Congestion avoidance** --> try to stay to left of the knee
+**Congestion Control** --> try to stay to right of knee
+
+## Throttling Options
+
+- Window-based(TCP)
+  - Constrain number of outstanding packets in the network
+  
+## Congestion Avoidance
+
+Goal: Adapt to changes in available bandwidth
+
+## Fast transmit vs. Fast recovery
+
+- Fast retransmit:
+  - Timeouts are slow
+  - when packet is lost, receiver still ACKs last in-order packet
+  - Use 3 duplicate ACKs to indicate a loss, detect losses quickly
+  
+- Fast recovery
+  - Goal: aboid stalling after loss
+  - If there are still ACKs coming in, no need for slow start
+  - If a packet has made it through, send another one
+  
+## Short Connections
+
+- only contains a few packets
+- How do short connections and slow-start interact???
+  - what happens when a packet is lost during slow-start?
+  - what happens when the SYN is dropped
+
+- bottom line: which packet gets dropped matters a lot
+
+## Random Early Detect
+
+Why would a router drop a perfectly good packet even if it has buffer space??
+
+As an early form of congestion warning if one doesn't have a congestion bit. Many IP routers have such a bit today, called the ECN bit
+
+
